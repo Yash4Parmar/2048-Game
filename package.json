@@ -1,0 +1,14 @@
+{
+  "name": "phaser-3-es6-template",
+  "version": "1.0.0",
+  "description": "Phaser 3 ES6 Template",
+  "main": "index.js",
+  "scripts": {
+    "get_info": "node ./dev_script/get_info.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.55.2"
+  }
+}
