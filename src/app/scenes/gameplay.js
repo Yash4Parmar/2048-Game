@@ -29,50 +29,59 @@ export default class gameplay extends Phaser.Scene {
 
     }
     onPress() {
-        this.printTable(this.blocksArr, 'numState')
-        let values = this.compareBlocks();
+        this.findSameBlock();
     }
 
-    compareBlocks() {
-        // console.log(this.blocksArr);
+    findSameBlock() {
+        let total;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
-                if (this.blocksArr[i + 1] && this.blocksArr[i][j].numState === this.blocksArr[i + 1][j].numState) {
-                    // console.log(this.blocksArr[i][j]);
-                    if (this.blocksArr[i][j].numState) {
-                        let total = this.blocksArr[i][j].numState + this.blocksArr[i + 1][j].numState
-                        // console.log(j);
-                        const values = {
-                            'col': j,
-                            'row': i,
-                            'total': total,
-                            'block1': this.blocksArr[i][j],
-                            'block2': this.blocksArr[i + 1][j]
-                        };
-                        let emptyBlock = this.findEmptyBlock(values);
-                        this.setBlockState(emptyBlock, values)
-
+                if (this.blocksArr[i][j].numState) {
+                    for (let k = i + 1; k < this.row; k++) {
+                        if (this.blocksArr[k][j].numState) {
+                            if (this.blocksArr[i][j].numState === this.blocksArr[k][j].numState) {
+                                total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
+                                const values = {
+                                    'col': j,
+                                    'total': total,
+                                    'block1': this.blocksArr[i][j],
+                                    'block2': this.blocksArr[k][j]
+                                }
+                                let emptyBlock;
+                                if (!emptyBlock) {
+                                    emptyBlock = values.block1
+                                }
+                                this.setBlockState(emptyBlock, values);
+                                this.setBlock()
+                            }
+                            break;
+                        }
                     }
                 }
             }
         }
     }
 
-    findEmptyBlock(values) {
-        let emptyBlock
-        // for (let j = 0; j < this.col; j++) {
-        for (let i = 0; i <= values.row; i++) {
-            // console.log(this.blocksArr[i][values.col].numState, i, values.col, this.row);
-            if (this.blocksArr[i][values.col].numState === 0) {
-                emptyBlock = this.blocksArr[i][values.col];
-                break;
-            }
-            else {
-                emptyBlock = values.block1
+    setBlock() {
+        let total
+        for (let j = 0; j < this.col; j++) {
+            for (let i = 0; i < this.row; i++) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    for (let k = i + 1; k < this.row; k++) {
+                        if (this.blocksArr[k][j].numState) {
+                            total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
+                            const values = {
+                                'total': total,
+                                'block1': this.blocksArr[i][j],
+                                'block2': this.blocksArr[k][j],
+                            }
+                            this.setEmptyBlockState(values);
+                        }
+                        break;
+                    }
+                }
             }
         }
-        return emptyBlock;
-        // }
     }
 
     printTable(array2D, prop) {
@@ -85,7 +94,6 @@ export default class gameplay extends Phaser.Scene {
                     arr[i].push(array2D[i][j][prop]);
             }
         }
-
         console.table(arr);
     }
 
@@ -97,6 +105,16 @@ export default class gameplay extends Phaser.Scene {
         values.block1.setBlockText(values.block1.numState)
         values.block2.setBlockText(values.block2.numState)
         emptyBlock.setBlockText(emptyBlock.numState)
+
+    }
+    setEmptyBlockState(values) {
+        values.block1.numState = values.total
+        values.block2.numState = 0
+        // emptyBlock.numState = values.total
+
+        values.block1.setBlockText(values.block1.numState)
+        values.block2.setBlockText(values.block2.numState)
+        // emptyBlock.setBlockText(emptyBlock.numState)
 
     }
 }
