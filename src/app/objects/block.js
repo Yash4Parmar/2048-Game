@@ -26,6 +26,8 @@ export default class Block {
 
         this.graphicsRect.setInteractive(new Phaser.Geom.Rectangle(0, 0, 130, 130), Phaser.Geom.Rectangle.Contains).on('pointerdown', (pointer, localX, localY, event) => {
             console.log(this.i, this.j);
+            // console.log(this.numState);
+
         });
         if (this.debug) {
             const text = this.scene.add.text(this.graphicsRect.x + 65, this.graphicsRect.y + 65, this.scene.index, {

@@ -11,6 +11,7 @@ export default class gameplay extends Phaser.Scene {
         this.col = 4
         this.index = 0;
         this.blocksArr = [];
+        this.finalData = [];
         this.blockData = blockData.arr;
 
 
@@ -21,18 +22,19 @@ export default class gameplay extends Phaser.Scene {
                 this.blocksArr[i].push(this.block);
             }
         }
-        console.log(this.blocksArr);
-        this.input.keyboard.on('keydown-' + 'UP', this.onPress, this);
-        this.input.keyboard.on('keydown-' + 'LEFT', this.onPress, this);
-        this.input.keyboard.on('keydown-' + 'RIGHT', this.onPress, this);
-        this.input.keyboard.on('keydown-' + 'DOWN', this.onPress, this);
+        // console.log(this.blocksArr);
+        this.input.keyboard.on('keydown-' + 'UP', this.upFindSameBlock, this);
+        this.input.keyboard.on('keydown-' + 'DOWN', this.downFindSameBlock, this);
+        this.input.keyboard.on('keydown-' + 'LEFT', this.leftFindSameBlock, this);
+        this.input.keyboard.on('keydown-' + 'RIGHT', this.rightFindSameBlock, this);
 
     }
     onPress() {
-        this.findSameBlock();
+        // this.findSameBlock();
     }
 
-    findSameBlock() {
+    upFindSameBlock() {
+        console.log('upFindSameBlock');
         let total;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
@@ -47,22 +49,26 @@ export default class gameplay extends Phaser.Scene {
                                     'block1': this.blocksArr[i][j],
                                     'block2': this.blocksArr[k][j]
                                 }
+                                this.finalData.push(values)
                                 let emptyBlock;
                                 if (!emptyBlock) {
                                     emptyBlock = values.block1
+                                    this.finalData.push(values.emptyBlock = emptyBlock)
                                 }
+                                // console.log(this.finalData);
                                 this.setBlockState(emptyBlock, values);
-                                this.setBlock()
+                                this.upSetEmptyBlock();
                             }
                             break;
                         }
                     }
-                }
+                } else this.upSetEmptyBlock()
             }
         }
     }
 
-    setBlock() {
+    upSetEmptyBlock() {
+        console.log('upSetEmptyBlock');
         let total
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
@@ -84,6 +90,178 @@ export default class gameplay extends Phaser.Scene {
         }
     }
 
+    downFindSameBlock() {
+        console.log('downFindSameBlock');
+        let total;
+        for (let j = 0; j < this.col; j++) {
+            for (let i = this.row - 1; i >= 0; i--) {
+                if (this.blocksArr[i][j].numState) {
+                    for (let k = i - 1; k >= 0; k--) {
+                        if (this.blocksArr[k][j].numState) {
+                            if (this.blocksArr[i][j].numState === this.blocksArr[k][j].numState) {
+                                total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
+                                const values = {
+                                    'col': j,
+                                    'total': total,
+                                    'block1': this.blocksArr[i][j],
+                                    'block2': this.blocksArr[k][j]
+                                }
+                                this.finalData.push(values)
+                                let emptyBlock;
+                                if (!emptyBlock) {
+                                    emptyBlock = values.block2
+                                    this.finalData.push(values.emptyBlock = emptyBlock)
+                                }
+                                // console.log(this.blocksArr[i][j]);
+                                this.setBlockState(emptyBlock, values);
+                                this.downSetEmptyBlock();
+                            }
+                            break;
+                        }
+                    }
+                } else this.downSetEmptyBlock()
+            }
+        }
+    }
+
+    downSetEmptyBlock() {
+        console.log('downSetEmptyBlock');
+        let total
+        for (let j = 0; j < this.col; j++) {
+            for (let i = this.row - 1; i >= 0; i--) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    for (let k = i - 1; k >= 0; k--) {
+                        if (this.blocksArr[k][j].numState) {
+                            total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
+                            const values = {
+                                'total': total,
+                                'block1': this.blocksArr[i][j],
+                                'block2': this.blocksArr[k][j],
+                            }
+                            this.setEmptyBlockState(values);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    leftFindSameBlock() {
+        console.log('leftFindSameBlock');
+        let total;
+        for (let i = 0; i < this.row; i++) {
+            for (let j = this.col - 1; j >= 0; j--) {
+                // console.log(i, j);
+                if (this.blocksArr[i][j].numState) {
+                    for (let k = j - 1; k >= 0; k--) {
+                        if (this.blocksArr[i][k].numState) {
+                            if (this.blocksArr[i][j].numState === this.blocksArr[i][k].numState) {
+                                total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
+                                console.log(total);
+                                const values = {
+                                    'col': j,
+                                    'total': total,
+                                    'block1': this.blocksArr[i][j],
+                                    'block2': this.blocksArr[i][k]
+                                }
+                                this.finalData.push(values)
+                                let emptyBlock;
+                                if (!emptyBlock) {
+                                    emptyBlock = values.block2
+                                    this.finalData.push(values.emptyBlock = emptyBlock)
+                                }
+                                this.setBlockState(emptyBlock, values);
+                                this.leftSetEmptyBlock();
+                            }
+                            break;
+                        }
+                    }
+                } else this.leftSetEmptyBlock()
+            }
+        }
+    }
+
+    leftSetEmptyBlock() {
+        console.log('leftSetEmptyBlock');
+        let total
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    for (let k = j + 1; k < this.col; k++) {
+                        if (this.blocksArr[i][k].numState) {
+                            total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
+                            const values = {
+                                'total': total,
+                                'block1': this.blocksArr[i][j],
+                                'block2': this.blocksArr[i][k],
+                            }
+                            this.setEmptyBlockState(values);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    rightFindSameBlock() {
+        let total;
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                // console.log(i, j);
+                if (this.blocksArr[i][j].numState) {
+                    for (let k = j + 1; k < this.col; k++) {
+                        if (this.blocksArr[i][k].numState) {
+                            if (this.blocksArr[i][j].numState === this.blocksArr[i][k].numState) {
+                                total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
+                                console.log(total);
+                                const values = {
+                                    'col': j,
+                                    'total': total,
+                                    'block1': this.blocksArr[i][j],
+                                    'block2': this.blocksArr[i][k]
+                                }
+                                this.finalData.push(values)
+                                let emptyBlock;
+                                if (!emptyBlock) {
+                                    emptyBlock = values.block2
+                                    this.finalData.push(values.emptyBlock = emptyBlock)
+                                }
+                                this.setBlockState(emptyBlock, values);
+                                this.rightSetEmptyBlock();
+                            }
+                            break;
+                        }
+                    }
+                } else this.rightSetEmptyBlock();
+            }
+        }
+    }
+
+    rightSetEmptyBlock() {
+        let total
+        for (let i = 0; i < this.row; i++) {
+            for (let j = this.col - 1; j >= 0; j--) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    for (let k = j - 1; k >= 0; k--) {
+                        if (this.blocksArr[i][k].numState) {
+                            total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
+                            const values = {
+                                'total': total,
+                                'block1': this.blocksArr[i][j],
+                                'block2': this.blocksArr[i][k],
+                            }
+                            this.setEmptyBlockState(values);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
     printTable(array2D, prop) {
         const arr = [];
 
@@ -98,6 +276,7 @@ export default class gameplay extends Phaser.Scene {
     }
 
     setBlockState(emptyBlock, values) {
+        console.log('setBlockState');
         values.block1.numState = 0
         values.block2.numState = 0
         emptyBlock.numState = values.total
@@ -105,16 +284,15 @@ export default class gameplay extends Phaser.Scene {
         values.block1.setBlockText(values.block1.numState)
         values.block2.setBlockText(values.block2.numState)
         emptyBlock.setBlockText(emptyBlock.numState)
-
     }
+
     setEmptyBlockState(values) {
+        console.log('setEmptyBlockState');
         values.block1.numState = values.total
         values.block2.numState = 0
-        // emptyBlock.numState = values.total
 
         values.block1.setBlockText(values.block1.numState)
         values.block2.setBlockText(values.block2.numState)
-        // emptyBlock.setBlockText(emptyBlock.numState)
 
     }
 }
