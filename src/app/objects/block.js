@@ -64,11 +64,11 @@ export default class Block {
         this.scene.index++;
     }
 
-    setBlockText(numState) {
-        if (numState === 0) {
+    setBlockText() {
+        if (this.numState === 0) {
             this.text.setText('');
         } else {
-            this.text.setText(numState);
+            this.text.setText(this.numState);
         }
     }
 

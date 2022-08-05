@@ -23,18 +23,34 @@ export default class gameplay extends Phaser.Scene {
             }
         }
         // console.log(this.blocksArr);
-        this.input.keyboard.on('keydown-' + 'UP', this.upFindSameBlock, this);
-        this.input.keyboard.on('keydown-' + 'DOWN', this.downFindSameBlock, this);
-        this.input.keyboard.on('keydown-' + 'LEFT', this.leftFindSameBlock, this);
-        this.input.keyboard.on('keydown-' + 'RIGHT', this.rightFindSameBlock, this);
+        this.input.keyboard.on('keydown', this.onPress, this);
 
     }
-    onPress() {
-        // this.findSameBlock();
+    onPress(event) {
+        console.log(event);
+        switch (event.key) {
+            case 'ArrowUp':
+                this.upFindSameBlock()
+                break;
+            case 'ArrowDown':
+                this.downFindSameBlock()
+                break;
+            case 'ArrowLeft':
+                this.leftFindSameBlock()
+                break;
+            case 'ArrowRight':
+                this.rightFindSameBlock()
+                break;
+
+            default:
+                break;
+        }
+        this.addAtRandomPlace()
+
     }
 
     upFindSameBlock() {
-        console.log('upFindSameBlock');
+        // console.log('upFindSameBlock');
         let total;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
@@ -68,7 +84,7 @@ export default class gameplay extends Phaser.Scene {
     }
 
     upSetEmptyBlock() {
-        console.log('upSetEmptyBlock');
+        // console.log('upSetEmptyBlock');
         let total
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
@@ -88,6 +104,8 @@ export default class gameplay extends Phaser.Scene {
                 }
             }
         }
+        // this.addAtRandomPlace()
+
     }
 
     downFindSameBlock() {
@@ -145,6 +163,8 @@ export default class gameplay extends Phaser.Scene {
                 }
             }
         }
+        // this.addAtRandomPlace()
+
     }
 
     leftFindSameBlock() {
@@ -203,6 +223,8 @@ export default class gameplay extends Phaser.Scene {
                 }
             }
         }
+        // this.addAtRandomPlace()
+
     }
 
     rightFindSameBlock() {
@@ -259,8 +281,24 @@ export default class gameplay extends Phaser.Scene {
                 }
             }
         }
+        // this.addAtRandomPlace()
     }
 
+
+    addAtRandomPlace() {
+        let emptyBlockArr = []
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    emptyBlockArr.push(this.blocksArr[i][j]);
+                }
+            }
+        }
+        // console.log(em);
+        let value = Phaser.Math.Between(0, emptyBlockArr.length - 1);
+        emptyBlockArr[value].numState = 2;
+        emptyBlockArr[value].setBlockText();
+    }
 
     printTable(array2D, prop) {
         const arr = [];
