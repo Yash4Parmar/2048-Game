@@ -23,8 +23,8 @@ export default class gameplay extends Phaser.Scene {
             }
         }
         this.input.keyboard.on('keydown', this.onPress, this);
-
     }
+
     onPress(event) {
         switch (event.key) {
             case 'ArrowUp':
@@ -40,11 +40,12 @@ export default class gameplay extends Phaser.Scene {
                 this.rightFindSameBlock()
                 break;
         }
-        this.addAtRandomPlace();
+        // this.addAtRandomPlace();
     }
 
     upFindSameBlock() {
         // console.log('upFindSameBlock');
+        let data;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
                 if (this.blocksArr[i][j].numState) {
@@ -52,11 +53,17 @@ export default class gameplay extends Phaser.Scene {
                         if (this.blocksArr[k][j].numState) {
                             if (this.blocksArr[i][j].numState === this.blocksArr[k][j].numState) {
                                 const total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
-                                const data = {
+                                data = {
                                     'src1': this.blocksArr[i][j],
+                                    'value1': this.blocksArr[i][j].numState,
+                                    'des1': null,
                                     'src2': this.blocksArr[k][j],
+                                    'value2': this.blocksArr[k][j].numState,
+                                    'des2': null,
                                     'total': total,
+                                    'isMatched': true
                                 }
+                                this.blocksArr[i][j].markedData = data;
                                 this.setBlockState(data);
                             }
                             break;
@@ -65,30 +72,99 @@ export default class gameplay extends Phaser.Scene {
                 }
             }
         }
-        this.upSetEmptyBlock()
+        this.upSetEmptyBlock();
+        this.move();
+        this.finalData = [];
     }
 
     upSetEmptyBlock() {
         // console.log('upSetEmptyBlock');
+        let data;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
                 if (this.blocksArr[i][j].numState === 0) {
                     for (let k = i + 1; k < this.row; k++) {
                         if (this.blocksArr[k][j].numState) {
                             const total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
-                            const data = {
+                            data = {
                                 'des': this.blocksArr[i][j],
                                 'src': this.blocksArr[k][j],
                                 'total': total,
                             }
                             this.setEmptyblockState(data);
+                            if (this.blocksArr[k][j].markedData) {
+                                this.blocksArr[k][j].markedData.des1 = data.des
+                                this.blocksArr[k][j].markedData.des2 = data.des
+
+                                this.finalData.push(this.blocksArr[k][j].markedData);
+                                // console.log(this.blocksArr[k][j].markedData);
+                                // console.log(this.finalData);
+                            } else {
+                                this.finalData.push(data);
+                                // console.log(this.finalData);
+                            }
                             break;
                         }
                     }
+                } else {
+                    if (this.blocksArr[i][j].markedData) {
+                        this.blocksArr[i][j].markedData.des1 = this.blocksArr[i][j].markedData.src1
+                        this.blocksArr[i][j].markedData.des2 = this.blocksArr[i][j].markedData.src1
+                        this.finalData.push(this.blocksArr[i][j].markedData);
+                        // console.log(this.finalData);
+                    }
                 }
+                this.blocksArr[i][j].markedData = null;
             }
         }
+        console.log(this.finalData);
     }
+
+    move() {
+        const duration = 300
+        for (let i = 0; i < this.finalData.length; i++) {
+            if (this.finalData[i].isMatched) {
+                console.log(this.finalData[i])
+                this.moveTween(this.finalData[i].src1, this.finalData[i].des1, duration);
+                this.moveTween(this.finalData[i].src2, this.finalData[i].des2, duration);
+                // this.finalData[i].moveTween(src1, des1, 200);
+                // this.finalData[i].moveTween(src2, des2, 200);
+            } else {
+                console.log(this.finalData[i])
+                this.moveTween(this.finalData[i].src, this.finalData[i].des, duration)
+            }
+            // this.finalData.pop();
+        }
+    }
+
+    moveTween(src, des, givenDuration) {
+        let tempRect = this.add.graphics({ x: src.graphicsRect.x, y: src.graphicsRect.y });
+        tempRect.fillStyle(0xEEE4DA, 0.75);
+        tempRect.fillRect(0, 0, 130, 130);
+
+        this.tweens.add({
+            targets: tempRect,
+            ease: 'Linear',
+            duration: givenDuration,
+            x: des.graphicsRect.x,
+            y: des.graphicsRect.y,
+            onComplete: () => {
+                // tempRect.destroy();
+            }
+        });
+
+        this.tweens.add({
+            targets: src.text,
+            ease: 'Linear',
+            duration: givenDuration,
+            x: des.text.x,
+            y: des.text.y,
+            onComplete: () => {
+                // tempRect.destroy();
+            }
+        });
+    }
+
 
     downFindSameBlock() {
         // console.log('downFindSameBlock');
@@ -250,8 +326,8 @@ export default class gameplay extends Phaser.Scene {
         data.src2.numState = 0
         data.src1.numState = data.total
 
-        data.src1.setBlockText()
-        data.src2.setBlockText()
+        // data.src1.setBlockText()
+        // data.src2.setBlockText()
     }
 
     setEmptyblockState(data) {
@@ -260,7 +336,7 @@ export default class gameplay extends Phaser.Scene {
         data.src.numState = 0
         data.des.numState = data.total
 
-        data.des.setBlockText()
-        data.src.setBlockText()
+        // data.des.setBlockText()
+        // data.src.setBlockText()
     }
 }
