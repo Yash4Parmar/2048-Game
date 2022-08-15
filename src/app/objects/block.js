@@ -36,19 +36,13 @@ export default class Block {
             fontFamily: 'Arial',
             fontSize: 40,
             color: '#000000',
-            // align: 'center'
         }).setOrigin(0.5).setDepth(1);
-
-        // this.scene.index++;
     }
 
     clearColor() {
         this.graphicsRect.fillStyle(colorData[0], 1);
         this.graphicsRect.fillRect(-65, -65, 130, 130);
-        // this.setBlockText();
         this.blockText.setText('');
-
-        // this.graphicsRect.clear();
     }
 
 

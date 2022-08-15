@@ -114,7 +114,7 @@ export default class gameplay extends Phaser.Scene {
                 this.blocksArr[i][j].markedData = null;
             }
         }
-        console.log(this.finalData);
+        // console.log(this.finalData);
     }
 
     move() {
@@ -138,7 +138,7 @@ export default class gameplay extends Phaser.Scene {
         src.clearColor();
         des.clearColor();
         let tempBlock = new Block(this, src.i, src.j, value);
-        console.log(tempBlock.numState);
+        // console.log(tempBlock.numState);
         this.tweens.add({
             targets: [tempBlock.graphicsRect, tempBlock.blockText],
             ease: 'Linear',
@@ -166,10 +166,9 @@ export default class gameplay extends Phaser.Scene {
         });
     }
 
-
-
     downFindSameBlock() {
         // console.log('downFindSameBlock');
+        let data
         for (let j = 0; j < this.col; j++) {
             for (let i = this.row - 1; i >= 0; i--) {
                 if (this.blocksArr[i][j].numState) {
@@ -177,11 +176,17 @@ export default class gameplay extends Phaser.Scene {
                         if (this.blocksArr[k][j].numState) {
                             if (this.blocksArr[i][j].numState === this.blocksArr[k][j].numState) {
                                 const total = this.blocksArr[i][j].numState + this.blocksArr[k][j].numState;
-                                const data = {
+                                data = {
                                     'src1': this.blocksArr[i][j],
+                                    'value1': this.blocksArr[i][j].numState,
+                                    'des1': null,
                                     'src2': this.blocksArr[k][j],
+                                    'value2': this.blocksArr[k][j].numState,
+                                    'des2': null,
                                     'total': total,
+                                    'isMatched': true
                                 }
+                                this.blocksArr[i][j].markedData = data;
                                 this.setBlockState(data);
                             }
                             break;
@@ -191,6 +196,8 @@ export default class gameplay extends Phaser.Scene {
             }
         }
         this.downSetEmptyBlock();
+        this.move();
+        this.finalData = [];
     }
 
     downSetEmptyBlock() {
@@ -207,16 +214,34 @@ export default class gameplay extends Phaser.Scene {
                                 'total': total,
                             }
                             this.setEmptyblockState(data);
+                            if (this.blocksArr[k][j].markedData) {
+                                this.blocksArr[k][j].markedData.des1 = data.des
+                                this.blocksArr[k][j].markedData.des2 = data.des
+
+                                this.finalData.push(this.blocksArr[k][j].markedData);
+                            } else {
+                                this.finalData.push(data);
+                            }
                             break;
                         }
                     }
+                } else {
+                    if (this.blocksArr[i][j].markedData) {
+                        this.blocksArr[i][j].markedData.des1 = this.blocksArr[i][j].markedData.src1
+                        this.blocksArr[i][j].markedData.des2 = this.blocksArr[i][j].markedData.src1
+                        this.finalData.push(this.blocksArr[i][j].markedData);
+                        // console.log(this.finalData);
+                    }
                 }
+                this.blocksArr[i][j].markedData = null;
+
             }
         }
     }
 
     leftFindSameBlock() {
         // console.log('leftFindSameBlock');
+        let data;
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 if (this.blocksArr[i][j].numState) {
@@ -224,11 +249,22 @@ export default class gameplay extends Phaser.Scene {
                         if (this.blocksArr[i][k].numState) {
                             if (this.blocksArr[i][j].numState === this.blocksArr[i][k].numState) {
                                 const total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
-                                const data = {
+                                // const data = {
+                                //     'src1': this.blocksArr[i][j],
+                                //     'src2': this.blocksArr[i][k],
+                                //     'total': total,
+                                // }
+                                data = {
                                     'src1': this.blocksArr[i][j],
+                                    'value1': this.blocksArr[i][j].numState,
+                                    'des1': null,
                                     'src2': this.blocksArr[i][k],
+                                    'value2': this.blocksArr[i][k].numState,
+                                    'des2': null,
                                     'total': total,
+                                    'isMatched': true
                                 }
+                                this.blocksArr[i][j].markedData = data;
                                 this.setBlockState(data);
                             }
                             break;
@@ -238,6 +274,8 @@ export default class gameplay extends Phaser.Scene {
             }
         }
         this.leftSetEmptyBlock();
+        this.move();
+        this.finalData = [];
     }
 
     leftSetEmptyBlock() {
@@ -254,15 +292,33 @@ export default class gameplay extends Phaser.Scene {
                                 'total': total,
                             }
                             this.setEmptyblockState(data);
+                            if (this.blocksArr[i][k].markedData) {
+                                this.blocksArr[i][k].markedData.des1 = data.des
+                                this.blocksArr[i][k].markedData.des2 = data.des
+
+                                this.finalData.push(this.blocksArr[i][k].markedData);
+                            } else {
+                                this.finalData.push(data);
+                            }
                             break;
                         }
                     }
+                } else {
+                    if (this.blocksArr[i][j].markedData) {
+                        this.blocksArr[i][j].markedData.des1 = this.blocksArr[i][j].markedData.src1
+                        this.blocksArr[i][j].markedData.des2 = this.blocksArr[i][j].markedData.src1
+                        this.finalData.push(this.blocksArr[i][j].markedData);
+                        // console.log(this.finalData);
+                    }
                 }
+                this.blocksArr[i][j].markedData = null;
+
             }
         }
     }
 
     rightFindSameBlock() {
+        let data
         for (let i = 0; i < this.row; i++) {
             for (let j = this.col - 1; j >= 0; j--) {
                 if (this.blocksArr[i][j].numState) {
@@ -270,11 +326,22 @@ export default class gameplay extends Phaser.Scene {
                         if (this.blocksArr[i][k].numState) {
                             if (this.blocksArr[i][j].numState === this.blocksArr[i][k].numState) {
                                 const total = this.blocksArr[i][j].numState + this.blocksArr[i][k].numState;
-                                const data = {
+                                // const data = {
+                                //     'src1': this.blocksArr[i][j],
+                                //     'src2': this.blocksArr[i][k],
+                                //     'total': total,
+                                // }
+                                data = {
                                     'src1': this.blocksArr[i][j],
+                                    'value1': this.blocksArr[i][j].numState,
+                                    'des1': null,
                                     'src2': this.blocksArr[i][k],
+                                    'value2': this.blocksArr[i][k].numState,
+                                    'des2': null,
                                     'total': total,
+                                    'isMatched': true
                                 }
+                                this.blocksArr[i][j].markedData = data;
                                 this.setBlockState(data);
                             }
                             break;
@@ -284,6 +351,8 @@ export default class gameplay extends Phaser.Scene {
             }
         }
         this.rightSetEmptyBlock();
+        this.move();
+        this.finalData = [];
     }
 
     rightSetEmptyBlock() {
@@ -300,10 +369,27 @@ export default class gameplay extends Phaser.Scene {
                                 'total': total,
                             }
                             this.setEmptyblockState(data);
+                            if (this.blocksArr[i][k].markedData) {
+                                this.blocksArr[i][k].markedData.des1 = data.des
+                                this.blocksArr[i][k].markedData.des2 = data.des
+
+                                this.finalData.push(this.blocksArr[i][k].markedData);
+                            } else {
+                                this.finalData.push(data);
+                            }
                             break;
                         }
                     }
+                } else {
+                    if (this.blocksArr[i][j].markedData) {
+                        this.blocksArr[i][j].markedData.des1 = this.blocksArr[i][j].markedData.src1
+                        this.blocksArr[i][j].markedData.des2 = this.blocksArr[i][j].markedData.src1
+                        this.finalData.push(this.blocksArr[i][j].markedData);
+                        // console.log(this.finalData);
+                    }
                 }
+                this.blocksArr[i][j].markedData = null;
+
             }
         }
     }
