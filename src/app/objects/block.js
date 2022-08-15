@@ -18,13 +18,11 @@ export default class Block {
     }
 
     init() {
-        this.graphicsRect = this.scene.add.graphics({ x: dimensions.width / 2 - 100 * 3.5 + this.j * 130, y: dimensions.height * 0.45 - 75 * 3.5 + this.i * 130 })
-        // this.graphicsRect.setOrigin(0.5);
-        // this.graphicsRect.displayOriginX = 0.5
-        // this.graphicsRect.displayOriginY = 0.5
-        // console.log(this.graphicsRect.displayOriginX);
+        this.graphicsRect = this.scene.add.graphics({ x: dimensions.width / 2 - 100 * 3.5 + this.j * 130 + 65, y: dimensions.height * 0.45 - 75 * 3.5 + this.i * 130 + 65 })
+        this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
+        this.graphicsRect.fillRect(-65, -65, 130, 130);
         this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
-        this.graphicsRect.strokeRect(0, 0, 130, 130);
+        // this.graphicsRect.strokeRect(-65, -65, 130, 130);
     }
 
     addText() {
@@ -34,22 +32,43 @@ export default class Block {
         } else {
             blockText = '';
         }
-        this.text = this.scene.add.text(this.graphicsRect.x + 65, this.graphicsRect.y + 65, blockText, {
+        this.blockText = this.scene.add.text(this.graphicsRect.x, this.graphicsRect.y, blockText, {
             fontFamily: 'Arial',
             fontSize: 40,
             color: '#000000',
             // align: 'center'
-        }).setOrigin(0.5).setDepth(2);
+        }).setOrigin(0.5).setDepth(1);
 
-        this.scene.index++;
+        // this.scene.index++;
     }
+
+    clearColor() {
+        this.graphicsRect.fillStyle(colorData[0], 1);
+        this.graphicsRect.fillRect(-65, -65, 130, 130);
+        // this.setBlockText();
+        this.blockText.setText('');
+
+        // this.graphicsRect.clear();
+    }
+
 
     setBlockText() {
         if (this.numState === 0) {
-            this.text.setText('');
+            this.blockText.setText('');
         } else {
-            this.text.setText(this.numState);
+            this.blockText.setText(this.numState);
         }
+    }
+
+    destroy() {
+        this.graphicsRect.destroy()
+        this.blockText.destroy()
+    }
+
+    copyGraphics() {
+        this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
+        this.graphicsRect.fillRect(-65, -65, 130, 130);
+        // this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
     }
 
 }

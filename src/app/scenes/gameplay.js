@@ -40,7 +40,7 @@ export default class gameplay extends Phaser.Scene {
                 this.rightFindSameBlock()
                 break;
         }
-        // this.addAtRandomPlace();
+        this.addAtRandomPlace();
     }
 
     upFindSameBlock() {
@@ -97,11 +97,8 @@ export default class gameplay extends Phaser.Scene {
                                 this.blocksArr[k][j].markedData.des2 = data.des
 
                                 this.finalData.push(this.blocksArr[k][j].markedData);
-                                // console.log(this.blocksArr[k][j].markedData);
-                                // console.log(this.finalData);
                             } else {
                                 this.finalData.push(data);
-                                // console.log(this.finalData);
                             }
                             break;
                         }
@@ -121,49 +118,54 @@ export default class gameplay extends Phaser.Scene {
     }
 
     move() {
-        const duration = 300
+        const duration = 150
         for (let i = 0; i < this.finalData.length; i++) {
             if (this.finalData[i].isMatched) {
-                console.log(this.finalData[i])
-                this.moveTween(this.finalData[i].src1, this.finalData[i].des1, duration);
-                this.moveTween(this.finalData[i].src2, this.finalData[i].des2, duration);
-                // this.finalData[i].moveTween(src1, des1, 200);
-                // this.finalData[i].moveTween(src2, des2, 200);
+                this.moveTween(this.finalData[i].src1, this.finalData[i].des1, this.finalData[i].value1, duration);
+                this.moveTween(this.finalData[i].src2, this.finalData[i].des2, this.finalData[i].value1, duration);
+                this.time.delayedCall(duration, this.popupTween, [this.finalData[i].des1, duration], this);
+
             } else {
-                console.log(this.finalData[i])
-                this.moveTween(this.finalData[i].src, this.finalData[i].des, duration)
+                this.moveTween(this.finalData[i].src, this.finalData[i].des, this.finalData[i].total, duration)
+                this.time.delayedCall(duration, this.popupTween, [this.finalData[i].des, duration], this);
             }
-            // this.finalData.pop();
         }
     }
 
-    moveTween(src, des, givenDuration) {
-        let tempRect = this.add.graphics({ x: src.graphicsRect.x, y: src.graphicsRect.y });
-        tempRect.fillStyle(0xEEE4DA, 0.75);
-        tempRect.fillRect(0, 0, 130, 130);
+    moveTween(src, des, value, givenDuration) {
+        // if (src.i === des.i && src.j === des.j) { return }
 
+        src.clearColor();
+        des.clearColor();
+        let tempBlock = new Block(this, src.i, src.j, value);
+        console.log(tempBlock.numState);
         this.tweens.add({
-            targets: tempRect,
+            targets: [tempBlock.graphicsRect, tempBlock.blockText],
             ease: 'Linear',
             duration: givenDuration,
             x: des.graphicsRect.x,
             y: des.graphicsRect.y,
             onComplete: () => {
-                // tempRect.destroy();
+                tempBlock.destroy();
             }
         });
 
+    }
+
+    popupTween(des, givenDuration) {
+
+        des.copyGraphics();
+
+        des.setBlockText();
+        des.blockText.visible = true;
         this.tweens.add({
-            targets: src.text,
-            ease: 'Linear',
+            targets: [des.graphicsRect, des.blockText],
+            ease: 'Back.easeOut',
             duration: givenDuration,
-            x: des.text.x,
-            y: des.text.y,
-            onComplete: () => {
-                // tempRect.destroy();
-            }
+            scale: { from: 0, to: 1 },
         });
     }
+
 
 
     downFindSameBlock() {
