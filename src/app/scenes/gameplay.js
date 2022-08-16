@@ -47,18 +47,16 @@ export default class gameplay extends Phaser.Scene {
     }
 
     drawBoard() {
-        let setX;
-        let setY;
-        for (let i = 0; i < this.row; i++) {
-            for (let j = 0; j < this.col; j++) {
-                setX = dimensions.width / 2 - 100 * 2 + i * 130 + 65
-                setY = dimensions.height * 0.45 - 75 * 2 + j * 130 + 65
-                let boardRect = this.add.graphics({ x: setX, y: setY })
-                boardRect.lineStyle(6, 0x1C3AA9, 1);
-                // boardRect.strokeRect(-65, -65, 130, 130);
-            }
-        }
+        let setX = dimensions.width / 2 - 209
+        let setY = dimensions.height * 0.45 - 160
+        let board = this.add.graphics({ x: setX, y: setY })
+        // board.lineStyle(5, 0x000000, 0.5);   // color: 0xRRGGBB
+        board.fillStyle(0x776E65, 0.5)
+        board.strokeRoundedRect(0, 0, 530, 530, 10);
+        board.fillRoundedRect(0, 0, 530, 530, 10);
     }
+
+
     upFindSameBlock() {
         // console.log('upFindSameBlock');
         let data;
