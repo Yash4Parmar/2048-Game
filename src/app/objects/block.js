@@ -8,8 +8,8 @@ export default class Block {
         this.i = i;
         this.j = j;
         this.numState = blockData;
-        this.x = dimensions.width / 2 - 100 * 2 + this.j * 130 + 65
-        this.y = dimensions.height * 0.45 - 75 * 2 + this.i * 130 + 65
+        this.x = dimensions.width / 2 - 100 * 2 + this.j * 130 + 60
+        this.y = dimensions.height * 0.45 - 75 * 2 + this.i * 130 + 60
 
         this.init();
         this.addText()
@@ -17,10 +17,11 @@ export default class Block {
 
     init() {
         this.graphicsRect = this.scene.add.graphics({ x: this.x, y: this.y })
-        this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
-        this.graphicsRect.fillRect(-60, -60, 130, 130);
-        // this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
-        // this.graphicsRect.strokeRect(-65, -65, 130, 130);
+        this.graphicsRect.fillStyle(colorData[this.numState], 1);
+        this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
+        // this.graphicsRect.fillRect(-60, -60, 120, 120);
+        // this.graphicsRect.strokeRoundedRect(this.x, this.y, 120, 120, 2);
+
     }
 
     addText() {
@@ -39,7 +40,10 @@ export default class Block {
 
     clearColor() {
         this.graphicsRect.fillStyle(colorData[0], 1);
-        this.graphicsRect.fillRect(-65, -65, 130, 130);
+        this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
+        // this.graphicsRect.fillRect(-65, -65, 130, 130);
+
+
         this.blockText.setText('');
     }
 
@@ -57,8 +61,9 @@ export default class Block {
     }
 
     copyGraphics() {
-        this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
-        this.graphicsRect.fillRect(-65, -65, 130, 130);
+        this.graphicsRect.fillStyle(colorData[this.numState], 1);
+        this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
+        // this.graphicsRect.fillRect(-60, -60, 120, 120);
         // this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
 
     }
