@@ -1,3 +1,4 @@
+import dimensions from "../../config/dimensions.js";
 import blockData from "../data/block-data.js";
 import Block from "../objects/block.js";
 
@@ -6,14 +7,13 @@ export default class gameplay extends Phaser.Scene {
         super({ key: 'gameplay' });
     }
     init() {
-        // console.log("asasa");
         this.row = 4
         this.col = 4
-        this.index = 0;
         this.blocksArr = [];
         this.finalData = [];
         this.blockData = blockData.arr;
 
+        this.drawBoard();
 
         for (let i = 0; i < this.row; i++) {
             this.blocksArr[i] = [];
@@ -29,20 +29,36 @@ export default class gameplay extends Phaser.Scene {
         switch (event.key) {
             case 'ArrowUp':
                 this.upFindSameBlock()
+                this.addAtRandomPlace();
                 break;
             case 'ArrowDown':
                 this.downFindSameBlock()
+                this.addAtRandomPlace();
                 break;
             case 'ArrowLeft':
                 this.leftFindSameBlock()
+                this.addAtRandomPlace();
                 break;
             case 'ArrowRight':
                 this.rightFindSameBlock()
+                this.addAtRandomPlace();
                 break;
         }
-        this.addAtRandomPlace();
     }
 
+    drawBoard() {
+        let setX;
+        let setY;
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                setX = dimensions.width / 2 - 100 * 2 + i * 130 + 65
+                setY = dimensions.height * 0.45 - 75 * 2 + j * 130 + 65
+                let boardRect = this.add.graphics({ x: setX, y: setY })
+                boardRect.lineStyle(6, 0x1C3AA9, 1);
+                // boardRect.strokeRect(-65, -65, 130, 130);
+            }
+        }
+    }
     upFindSameBlock() {
         // console.log('upFindSameBlock');
         let data;
@@ -108,13 +124,11 @@ export default class gameplay extends Phaser.Scene {
                         this.blocksArr[i][j].markedData.des1 = this.blocksArr[i][j].markedData.src1
                         this.blocksArr[i][j].markedData.des2 = this.blocksArr[i][j].markedData.src1
                         this.finalData.push(this.blocksArr[i][j].markedData);
-                        // console.log(this.finalData);
                     }
                 }
                 this.blocksArr[i][j].markedData = null;
             }
         }
-        // console.log(this.finalData);
     }
 
     move() {
@@ -138,32 +152,48 @@ export default class gameplay extends Phaser.Scene {
         src.clearColor();
         des.clearColor();
         let tempBlock = new Block(this, src.i, src.j, value);
-        // console.log(tempBlock.numState);
         this.tweens.add({
             targets: [tempBlock.graphicsRect, tempBlock.blockText],
             ease: 'Linear',
             duration: givenDuration,
             x: des.graphicsRect.x,
             y: des.graphicsRect.y,
-            onComplete: () => {
-                tempBlock.destroy();
-            }
+            onComplete: () => { tempBlock.destroy(); }
         });
 
     }
 
-    popupTween(des, givenDuration) {
+    popupTween(desBlock, givenDuration) {
+        desBlock.copyGraphics();
+        desBlock.setBlockText();
+        desBlock.blockText.visible = true;
 
-        des.copyGraphics();
-
-        des.setBlockText();
-        des.blockText.visible = true;
         this.tweens.add({
-            targets: [des.graphicsRect, des.blockText],
+            targets: [desBlock.graphicsRect, desBlock.blockText],
             ease: 'Back.easeOut',
             duration: givenDuration,
             scale: { from: 0, to: 1 },
         });
+    }
+
+    addAtRandomPlace() {
+        let emptyBlockArr = []
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                if (this.blocksArr[i][j].numState === 0) {
+                    emptyBlockArr.push(this.blocksArr[i][j]);
+                }
+            }
+        }
+        let randomNum = Phaser.Math.Between(0, emptyBlockArr.length - 1);
+
+        const emptyBlock = emptyBlockArr[randomNum];
+        if (!emptyBlock) {
+            console.log("gameOver");
+            return
+        }
+        emptyBlock.numState = 2;
+        this.popupTween(emptyBlock, 150);
     }
 
     downFindSameBlock() {
@@ -234,7 +264,6 @@ export default class gameplay extends Phaser.Scene {
                     }
                 }
                 this.blocksArr[i][j].markedData = null;
-
             }
         }
     }
@@ -394,19 +423,6 @@ export default class gameplay extends Phaser.Scene {
         }
     }
 
-    addAtRandomPlace() {
-        let emptyBlockArr = []
-        for (let i = 0; i < this.row; i++) {
-            for (let j = 0; j < this.col; j++) {
-                if (this.blocksArr[i][j].numState === 0) {
-                    emptyBlockArr.push(this.blocksArr[i][j]);
-                }
-            }
-        }
-        let value = Phaser.Math.Between(0, emptyBlockArr.length - 1);
-        emptyBlockArr[value].numState = 2;
-        emptyBlockArr[value].setBlockText();
-    }
 
     setBlockState(data) {
         // console.log('setBlockState');

@@ -1,5 +1,3 @@
-
-// import { Tweens } from "phaser";
 import dimensions from "../../config/dimensions.js";
 import blockData from "../data/block-data.js";
 import colorData from "../data/color-data.js";
@@ -10,18 +8,18 @@ export default class Block {
         this.i = i;
         this.j = j;
         this.numState = blockData;
-        this.x = dimensions.width / 2 - 75 * 3.5 + this.j * 130
-        this.y = dimensions.height * 0.45 - 45 * 3.5 + this.i * 130
+        this.x = dimensions.width / 2 - 100 * 2 + this.j * 130 + 65
+        this.y = dimensions.height * 0.45 - 75 * 2 + this.i * 130 + 65
 
         this.init();
         this.addText()
     }
 
     init() {
-        this.graphicsRect = this.scene.add.graphics({ x: dimensions.width / 2 - 100 * 3.5 + this.j * 130 + 65, y: dimensions.height * 0.45 - 75 * 3.5 + this.i * 130 + 65 })
+        this.graphicsRect = this.scene.add.graphics({ x: this.x, y: this.y })
         this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
-        this.graphicsRect.fillRect(-65, -65, 130, 130);
-        this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
+        this.graphicsRect.fillRect(-60, -60, 130, 130);
+        // this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
         // this.graphicsRect.strokeRect(-65, -65, 130, 130);
     }
 
@@ -45,7 +43,6 @@ export default class Block {
         this.blockText.setText('');
     }
 
-
     setBlockText() {
         if (this.numState === 0) {
             this.blockText.setText('');
@@ -63,6 +60,7 @@ export default class Block {
         this.graphicsRect.fillStyle(colorData[this.numState], 0.5);
         this.graphicsRect.fillRect(-65, -65, 130, 130);
         // this.graphicsRect.lineStyle(3, 0x1C3AA9, 1);
+
     }
 
 }
