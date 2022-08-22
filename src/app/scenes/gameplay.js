@@ -12,6 +12,7 @@ export default class gameplay extends Phaser.Scene {
         this.blocksArr = [];
         this.finalData = [];
         this.blockData = blockData.arr;
+        this.canPress = true;
 
         this.drawBoard();
 
@@ -22,27 +23,36 @@ export default class gameplay extends Phaser.Scene {
                 this.blocksArr[i].push(this.block);
             }
         }
-        this.input.keyboard.on('keydown', this.onPress, this);
+        this.input.keyboard.on('keydown', this.onPressDown, this);
+        this.input.keyboard.on('keyup', this.onPressUp, this);
     }
 
-    onPress(event) {
-        switch (event.key) {
-            case 'ArrowUp':
-                this.upFindSameBlock()
-                this.addAtRandomPlace();
-                break;
-            case 'ArrowDown':
-                this.downFindSameBlock()
-                this.addAtRandomPlace();
-                break;
-            case 'ArrowLeft':
-                this.leftFindSameBlock()
-                this.addAtRandomPlace();
-                break;
-            case 'ArrowRight':
-                this.rightFindSameBlock()
-                this.addAtRandomPlace();
-                break;
+    onPressUp() {
+        this.canPress = true
+    }
+
+    onPressDown(event) {
+        if (this.canPress) {
+            this.canPress = false
+            switch (event.key) {
+                case 'ArrowUp':
+                    this.upFindSameBlock();
+                    this.addAtRandomPlace();
+                    break;
+                case 'ArrowDown':
+                    this.downFindSameBlock()
+                    this.addAtRandomPlace();
+                    break;
+                case 'ArrowLeft':
+                    this.leftFindSameBlock()
+                    this.addAtRandomPlace();
+                    break;
+                case 'ArrowRight':
+                    this.rightFindSameBlock()
+                    this.addAtRandomPlace();
+                    break;
+            }
+            this.findGameOver();
         }
     }
 
@@ -58,7 +68,6 @@ export default class gameplay extends Phaser.Scene {
 
 
     upFindSameBlock() {
-        // console.log('upFindSameBlock');
         let data;
         for (let j = 0; j < this.col; j++) {
             for (let i = 0; i < this.row; i++) {
@@ -89,6 +98,7 @@ export default class gameplay extends Phaser.Scene {
         this.upSetEmptyBlock();
         this.move();
         this.finalData = [];
+        // this.canPress = true;
     }
 
     upSetEmptyBlock() {
@@ -145,8 +155,8 @@ export default class gameplay extends Phaser.Scene {
     }
 
     moveTween(src, des, value, givenDuration) {
+        // this.canPress = false
         // if (src.i === des.i && src.j === des.j) { return }
-
         src.clearColor();
         des.clearColor();
         let tempBlock = new Block(this, src.i, src.j, value);
@@ -172,6 +182,7 @@ export default class gameplay extends Phaser.Scene {
             duration: givenDuration,
             scale: { from: 0, to: 1 },
         });
+        // this.canPress = true
     }
 
     addAtRandomPlace() {
@@ -187,12 +198,37 @@ export default class gameplay extends Phaser.Scene {
 
         const emptyBlock = emptyBlockArr[randomNum];
         if (!emptyBlock) {
-            console.log("gameOver");
+            // console.log("gameOver");
             return
         }
         emptyBlock.numState = 2;
         this.popupTween(emptyBlock, 150);
     }
+
+    findGameOver() {
+        this.isGameover = true;
+        for (let j = 0; j < this.col; j++) {
+            for (let i = 0; i < this.row; i++) {
+                if ((this.blocksArr[i + 1] &&
+                    this.blocksArr[i][j].numState === this.blocksArr[i + 1][j].numState) ||
+                    (this.blocksArr[i][j + 1] &&
+                        this.blocksArr[i][j].numState === this.blocksArr[i][j + 1].numState)
+                ) {
+                    console.log('asd');
+                    this.isGameover = false
+                    break
+                }
+            }
+            if (!this.isGameover) {
+                break;
+            }
+        }
+        if (this.isGameover) {
+            console.log("gameover");
+            return;
+        }
+    }
+
 
     downFindSameBlock() {
         // console.log('downFindSameBlock');

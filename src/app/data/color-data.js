@@ -1,6 +1,6 @@
 export default
     {
-        0: 0xffffff,
+        0: 0xF9F6F2,
         2: 0xEEE4DA,
         4: 0xEDE0C8,
         8: 0xF27579,
