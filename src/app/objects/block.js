@@ -24,6 +24,28 @@ export default class Block {
 
     }
 
+    show() {
+        this.graphicsRect.visible = true;
+        this.blockText.visible = true;
+    }
+
+    hide() {
+        this.graphicsRect.visible = false;
+        this.blockText.visible = false;
+    }
+
+    rePos(i, j, numState) {
+        this.x = dimensions.width / 2 - 100 * 2 + j * 130 + 60
+        this.y = dimensions.height * 0.45 - 75 * 2 + i * 130 + 60
+
+        this.graphicsRect.x = this.x
+        this.graphicsRect.y = this.y
+
+        this.graphicsRect.fillStyle(colorData[numState], 1);
+        this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
+
+    }
+
     addText() {
         let blockText
         if (this.numState) {
@@ -42,7 +64,6 @@ export default class Block {
         this.graphicsRect.fillStyle(colorData[0], 1);
         this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
         // this.graphicsRect.fillRect(-65, -65, 130, 130);
-
 
         this.blockText.setText('');
     }
