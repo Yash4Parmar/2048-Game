@@ -43,7 +43,6 @@ export default class Block {
 
         this.graphicsRect.fillStyle(colorData[numState], 1);
         this.graphicsRect.fillRoundedRect(-60, -60, 120, 120, 10);
-
     }
 
     addText() {
@@ -54,7 +53,7 @@ export default class Block {
             blockText = '';
         }
         this.blockText = this.scene.add.text(this.graphicsRect.x, this.graphicsRect.y, blockText, {
-            fontFamily: 'Arial',
+            fontFamily: 'Rockwell',
             fontSize: 40,
             color: '#000000',
         }).setOrigin(0.5).setDepth(1);

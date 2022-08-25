@@ -34,13 +34,14 @@ export default class gameplay extends Phaser.Scene {
             }
         }
 
+
+
         // for (let i = 0; i < this.row * this.col; i++) {
         //     let tempBlock = new Block(this, 0, 0, 0);
         //     tempBlock.hide();
         //     this.tempBlocksArr.push(tempBlock);
         // }
-
-        console.log(this.tempBlocksArr);
+        // console.log(this.tempBlocksArr);
 
         this.input.keyboard.on('keydown', this.onPressDown, this);
         this.input.keyboard.on('keyup', this.onPressUp, this);
@@ -57,21 +58,24 @@ export default class gameplay extends Phaser.Scene {
                 case 'ArrowUp':
                     this.upFindSameBlock();
                     this.addAtRandomPlace();
+                    this.findGameOver();
                     break;
                 case 'ArrowDown':
                     this.downFindSameBlock()
                     this.addAtRandomPlace();
+                    this.findGameOver();
                     break;
                 case 'ArrowLeft':
                     this.leftFindSameBlock()
                     this.addAtRandomPlace();
+                    this.findGameOver();
                     break;
                 case 'ArrowRight':
                     this.rightFindSameBlock()
                     this.addAtRandomPlace();
+                    this.findGameOver();
                     break;
             }
-            this.findGameOver();
         }
     }
 
@@ -79,7 +83,7 @@ export default class gameplay extends Phaser.Scene {
         let setX = dimensions.width / 2 - 209
         let setY = dimensions.height * 0.45 - 160
         let board = this.add.graphics({ x: setX, y: setY })
-        // board.lineStyle(5, 0x000000, 0.5);   // color: 0xRRGGBB
+        // board.lineStyle(5, 0xffffff, 1);   // color: 0xRRGGBB
         board.fillStyle(0x776E65, 0.5)
         board.strokeRoundedRect(0, 0, 530, 530, 10);
         board.fillRoundedRect(0, 0, 530, 530, 10);
@@ -245,7 +249,8 @@ export default class gameplay extends Phaser.Scene {
                 if ((this.blocksArr[i + 1] &&
                     this.blocksArr[i][j].numState === this.blocksArr[i + 1][j].numState) ||
                     (this.blocksArr[i][j + 1] &&
-                        this.blocksArr[i][j].numState === this.blocksArr[i][j + 1].numState)
+                        this.blocksArr[i][j].numState === this.blocksArr[i][j + 1].numState) &&
+                    this.blocksArr[i][j].numState !== 0
                 ) {
                     this.isGameover = false
                     break
@@ -257,6 +262,7 @@ export default class gameplay extends Phaser.Scene {
         }
         if (this.isGameover) {
             console.log("gameover");
+            // this.canPress = false
             return;
         }
     }

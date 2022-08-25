@@ -1,10 +1,15 @@
 export default
     {
-        0: 0xF9F6F2,
-        2: 0xEEE4DA,
+        // 0: 0xcfb289,
+        0: 0xFFF5EE,
+        // 2: 0xEEE4DA,
+        2: 0xF0EAD6,
         4: 0xEDE0C8,
+        // 4: 0xffb1de,
         8: 0xF27579,
+        // 8: 0xc9ecc4,
         16: 0xF59563,
+        // 16: 0xfbb1ff,
         32: 0xF67C5F,
         64: 0xF65E3B,
         128: 0xEDCF72,

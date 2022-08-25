@@ -12,6 +12,6 @@ export default {
     height: dimensions.height
   },
   scene: [Boot, Home, gameplay],
-  backgroundColor: 0xffffff,
+  backgroundColor: 0xFCF5E5,
 
 };
