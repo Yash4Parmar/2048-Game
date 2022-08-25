@@ -4,7 +4,7 @@ import Home from '../app/scenes/Home.js';
 import dimensions from './dimensions.js';
 
 export default {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

@@ -26,9 +26,11 @@ export default class gameplay extends Phaser.Scene {
 
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
-                let tempBlock = new Block(this, i, j, 0);
-                tempBlock.hide();
-                this.tempBlocksArr.push(tempBlock);
+                for (let k = 0; k < 3; k++) {
+                    let tempBlock = new Block(this, i, j, 0);
+                    tempBlock.hide();
+                    this.tempBlocksArr.push(tempBlock);
+                }
             }
         }
 
